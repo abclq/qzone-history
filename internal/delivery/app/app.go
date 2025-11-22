@@ -53,13 +53,13 @@ func (a *App) Run(ctx context.Context) error {
 			return logError("获取登录二维码失败", err)
 		}
 
-		log.Println("保存并显示二维码...")
-		qrPath, err := qrcode.SaveQRCode(qrCode)
+		log.Println("在浏览器中打开二维码...")
+		shutdownServer, notifySuccess, err := qrcode.OpenInBrowser(qrCode)
 		if err != nil {
-			return logError("保存和显示二维码失败", err)
+			return logError("打开浏览器显示二维码失败", err)
 		}
-		// 打印二维码路径
-		log.Printf("二维码已保存至 %s，请使用手机QQ扫描登录\n", qrPath)
+		defer shutdownServer()
+
 		log.Println("等待用户扫描二维码...")
 
 		loginSuccess := false
@@ -76,6 +76,8 @@ func (a *App) Run(ctx context.Context) error {
 				if err != nil {
 					return logError("完成登录失败", err)
 				}
+				notifySuccess()             // 通知网页登录成功
+				time.Sleep(2 * time.Second) // 等待网页显示成功信息
 				loginSuccess = true
 			case entity.LoginStatusWaiting:
 				// log.Println("等待扫描二维码")

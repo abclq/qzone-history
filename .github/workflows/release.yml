@@ -16,7 +16,7 @@ jobs:
     steps:
       # 检出代码
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0  # 官方推荐，确保完整的历史记录，GoReleaser 需要使用 tag 信息
 
@@ -28,7 +28,7 @@ jobs:
 
       # 运行 GoReleaser 来构建、打包和发布版本
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser  # GoReleaser 的发行版本
           version: latest  # 使用最新版本的 GoReleaser
